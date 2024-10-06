@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% load cache %}
+    {% cache 60 recent_comments post.id %}
+    <div class="recent-comments">
+        {% for comment in post.comments.all %}
+
+        {% endfor %}
+    </div>
+    {% endcache %}
+</body>
+</html>

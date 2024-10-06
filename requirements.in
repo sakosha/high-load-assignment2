@@ -1,0 +1,6 @@
+django
+django-rest-framework
+django-redis
+gunicorn
+django-debug-toolbar
+python-dotenv
