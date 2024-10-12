@@ -1,0 +1,84 @@
+#networks:
+##  traefik:
+##    external: true
+#  app_network:
+#    driver: bridge
+#
+#services:
+#  traefik:
+#    image: traefik:latest
+#    container_name: traefik
+#    command:
+#      - '--api.insecure=true'
+#      - '--providers.docker=true'
+#      - '--providers.docker.exposedbydefault=false'
+#      - '--entryPoints.web.address=:80'
+#    ports:
+#      - '80:80'
+#      - '8080:8080'  # panel
+#    networks:
+#      - traefik
+#    volumes:
+#      - '/var/run/docker.sock:/var/run/docker.sock:ro'
+#
+#  redis:
+#    image: redis:alpine
+#    container_name: redis
+#    ports:
+#      - '6379:6379'
+#    networks:
+#      - app_network
+#
+#  django1:
+#    build:
+#      context: .
+#    container_name: django1
+#    volumes:
+#      - .:/app/
+#    depends_on:
+#      - redis
+#    expose:
+#      - '8000'
+#    networks:
+#      - app_network
+#      - traefik
+#    env_file:
+#      - .env
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.django1.rule=Host(`django1.localhost`)'
+#      - 'traefik.http.services.django1.loadbalancer.server.port=8000'
+#      - 'traefik.http.services.django1.loadbalancer.healthcheck.path=/health'
+#      - 'traefik.http.services.django1.loadbalancer.healthcheck.interval=10s'
+#
+#  django2:
+#    build:
+#      context: .
+#    container_name: django2
+#    volumes:
+#      - .:/app/
+#    depends_on:
+#      - redis
+#    expose:
+#      - '8000'
+#    networks:
+#      - traefik
+#      - app_network
+#    env_file:
+#      - .env
+#    labels:
+#      - 'traefik.enable=true'
+#      - 'traefik.http.routers.django2.rule=Host(`django2.localhost`)'
+#      - 'traefik.http.services.django2.loadbalancer.server.port=8000'
+#      - 'traefik.http.services.django2.loadbalancer.healthcheck.path=/health'
+#      - 'traefik.http.services.django2.loadbalancer.healthcheck.interval=10s'
+#
+#  ab:  # will fail
+#    image: jordi/ab
+#    container_name: ab
+#    depends_on:
+#      - traefik
+#    networks:
+#      - app_network
+#  # docker-compose run ab bash
+#  # ab -n 1000 -c 10 http://traefik/

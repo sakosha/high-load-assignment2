@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$Title$</title>
+</head>
+<body>
+{% load cache %}
+{% block content %}
+    <h1>Blog Posts</h1>
+
+    <ul>
+        {% for post in object_list %}
+            <li>
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.content }}</p>
+                <p><strong>Author:</strong> {{ post.author.username }}</p>
+                <p><strong>Published:</strong> {{ post.created_date }}</p>
+                {% cache 60 comments_count post.id %}
+                    <p><strong>Comments:</strong> {{ comments_count }} </p>
+                {% endcache %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+</body>
+</html>
